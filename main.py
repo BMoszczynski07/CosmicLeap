@@ -30,6 +30,9 @@ score = 0
 start_time = 0
 speed = 0
 game_active = False
+bgMusicPlaying = False
+bgMusic = pygame.mixer.Sound("audio/music.wav")
+bgMusic.set_volume(0.075)
 
 player = pygame.sprite.GroupSingle()
 player.add(Player())
@@ -153,6 +156,10 @@ def collisions(player, obstacles):
 
 def collision_sprite():
     if pygame.sprite.spritecollide(player.sprite, obstacle_group, False):
+        fail = pygame.mixer.Sound("audio/fail.wav")
+        fail.set_volume(0.075)
+        fail.play()
+
         obstacle_group.empty()
         player.sprite.rect.bottom = 300
         return False
@@ -179,12 +186,11 @@ while running:
                 start_time = pygame.time.get_ticks()
 
         if event.type == obstacle_timer and game_active:
-            obstacle_group.add(Obstacle("fly" if randint(0,2) else "snail"))
+            obstacle_group.add(Obstacle("snail" if randint(0,2) else "fly"))
             # if randint(0,2):
             #     obstacle_rect_list.append(snail_surf.get_rect(bottomright = (randint(900, 1100), 300)))
             # else:
             #     obstacle_rect_list.append(fly_surf.get_rect(bottomright=(randint(900, 1100), 210)))
-            print(obstacle_rect_list)
 
         if event.type == snail_animation_timer and game_active:
             if snail_frame_id == 0: snail_frame_id = 1
@@ -250,6 +256,10 @@ while running:
 
         game_active = collision_sprite()
 
+        if bgMusicPlaying == False:
+            bgMusicPlaying = True
+            bgMusic.play()
+
         # collision
         # game_active = collisions(player_rect, obstacle_rect_list)
 
@@ -259,6 +269,10 @@ while running:
         # if snail_rect.x < -100:
         #     snail_rect.x = screen.get_width()
     else:
+        if bgMusicPlaying:
+            bgMusicPlaying = False
+            bgMusic.stop()
+
         speed = 0
 
         screen.fill((100,100,100))
