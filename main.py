@@ -2,6 +2,8 @@ import pygame
 from sys import exit
 import math
 from random import randint
+from Player import Player
+from Obstacle import Obstacle
 
 pygame.init()
 
@@ -28,6 +30,11 @@ score = 0
 start_time = 0
 speed = 0
 game_active = False
+
+player = pygame.sprite.GroupSingle()
+player.add(Player())
+
+obstacle_group = pygame.sprite.Group()
 
 # variables (for welcome page)
 
@@ -144,6 +151,13 @@ def collisions(player, obstacles):
             if player.colliderect(obstacle_rect): return False
     return True
 
+def collision_sprite():
+    if pygame.sprite.spritecollide(player.sprite, obstacle_group, False):
+        obstacle_group.empty()
+        player.sprite.rect.bottom = 300
+        return False
+    return True
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -165,10 +179,11 @@ while running:
                 start_time = pygame.time.get_ticks()
 
         if event.type == obstacle_timer and game_active:
-            if randint(0,2):
-                obstacle_rect_list.append(snail_surf.get_rect(bottomright = (randint(900, 1100), 300)))
-            else:
-                obstacle_rect_list.append(fly_surf.get_rect(bottomright=(randint(900, 1100), 210)))
+            obstacle_group.add(Obstacle("fly" if randint(0,2) else "snail"))
+            # if randint(0,2):
+            #     obstacle_rect_list.append(snail_surf.get_rect(bottomright = (randint(900, 1100), 300)))
+            # else:
+            #     obstacle_rect_list.append(fly_surf.get_rect(bottomright=(randint(900, 1100), 210)))
             print(obstacle_rect_list)
 
         if event.type == snail_animation_timer and game_active:
@@ -213,22 +228,30 @@ while running:
         # Player
         # print(player_rect.y)
 
-        player_gravity += .04
+        # player_gravity += .04
 
-        if player_rect.y + player_gravity > 214:
-            player_rect.y = 216
-
-        if player_rect.y + player_gravity < 216:
-            player_rect.y += player_gravity
+        # if player_rect.y + player_gravity > 214:
+        #     player_rect.y = 216
+        #
+        # if player_rect.y + player_gravity < 216:
+        #     player_rect.y += player_gravity
 
         # Obstacle movement
-        obstacle_rect_list = obstacle_movement(obstacle_rect_list)
+        # obstacle_rect_list = obstacle_movement(obstacle_rect_list)
 
-        player_animation()
-        screen.blit(player_surface, player_rect)
+        # player_animation()
+        # screen.blit(player_surface, player_rect)
+
+        player.draw(screen)
+        player.update()
+
+        obstacle_group.draw(screen)
+        obstacle_group.update()
+
+        game_active = collision_sprite()
 
         # collision
-        game_active = collisions(player_rect, obstacle_rect_list)
+        # game_active = collisions(player_rect, obstacle_rect_list)
 
         # Snail
         # snail_rect.x -= 2
