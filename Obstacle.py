@@ -2,7 +2,7 @@ import pygame.sprite
 import random
 
 class Obstacle(pygame.sprite.Sprite):
-    def __init__(self, type):
+    def __init__(self, type, speed):
         super().__init__()
 
         if type == "fly":
@@ -16,7 +16,7 @@ class Obstacle(pygame.sprite.Sprite):
             self.frames = [snail_frame_1, snail_frame_2]
             y_pos = 300
 
-        self.speed = 0
+        self.speed = speed
 
         self.animation_index = 0
 
@@ -32,8 +32,6 @@ class Obstacle(pygame.sprite.Sprite):
         self.image = self.frames[int(self.animation_index)]
 
     def move_to_left(self):
-        self.speed += 0.0001
-
         self.rect.left -= 2 + self.speed
 
     def destroy(self):
