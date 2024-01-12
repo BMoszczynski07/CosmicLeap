@@ -8,12 +8,13 @@ from Obstacle import Obstacle
 pygame.init()
 
 # graphics for window
-alien_logo = pygame.image.load("graphics/alien.png")
+alien_logo = pygame.image.load("graphics/alien_icon.png")
 
 # init window
+pygame.display.set_icon(alien_logo)
+
 screen = pygame.display.set_mode((800, 400)) # width, height
 pygame.display.set_caption("CosmicLeap")
-pygame.display.set_icon(alien_logo)
 
 # init clock (for FPS)
 clock = pygame.time.Clock()
